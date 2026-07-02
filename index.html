@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BOOK</title>
+    <style>
+        :root {
+            /* 浅色主题变量 */
+            --bg-page: #f5f5f7;
+            --bg-card: #ffffff;
+            --text-main: #1d1d1f;
+            --text-tip: #86868b;
+            --bg-input: #fbfbfd;
+            --border-input: #d2d2d7;
+            --bg-result-box: #f0f4ff;
+            --text-result-box: #0040aa;
+            --bg-btn-gray: #e8e8ed;
+            --text-btn-gray: #1d1d1f;
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-card-hover: 0 10px 35px rgba(0, 0, 0, 0.09);
+        }
+        [data-theme="dark"] {
+            /* 深色主题变量 */
+            --bg-page: #121212;
+            --bg-card: #1e1e24;
+            --text-main: #f5f5f7;
+            --text-tip: #98989e;
+            --bg-input: #2a2a33;
+            --border-input: #3a3a47;
+            --bg-result-box: #0f2040;
+            --text-result-box: #70b0ff;
+            --bg-btn-gray: #32323d;
+            --text-btn-gray: #f5f5f7;
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25);
+            --shadow-card-hover: 0 10px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.47;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 30px 16px;
+        }
+
+        /* ========== 登录注册居中核心修改 ========== */
+        .auth-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--bg-card);
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: var(--shadow-card);
+            animation: cardFadeIn 0.6s ease forwards;
+        }
+
+        .auth-title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--text-main);
+        }
+
+        .form-item {
+            margin-bottom: 18px;
+        }
+
+        .form-item label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-tip);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-input);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--bg-input);
+            color: var(--text-main);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 5px rgba(0, 122, 255, 0.18);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            background: #007aff;
+            color: #fff;
+            margin-top: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .auth-btn:hover {
+            background: #0071e3;
+            transform: scale(1.02);
+        }
+
+        .auth-btn:active {
+            transform: scale(0.98);
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+            color: var(--text-tip);
+        }
+
+        .auth-link span {
+            color: #007aff;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .tip {
+            color: #ff3b30;
+            font-size: 13px;
+            margin-top: 6px;
+            text-align: center;
+            display: none;
+        }
+
+        /* 底部版权信息 */
+        .footer-info {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-tip);
+            line-height: 1.8;
+            transition: color 0.3s ease;
+        }
+
+        /* 顶部栏：左侧头像+昵称 + 右侧主题 */
+        .theme-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .user-left-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .top-nickname {
+            font-size: 16px;
+            font-weight: bold; /* 加粗 */
+            color: var(--text-main);
+        }
+
+        /* 用户头像 正方形 */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #007aff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 用户弹出面板 */
+        .user-panel {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            width: 280px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+            padding: 20px;
+            z-index: 999;
+            display: none;
+        }
+        .user-panel.show {
+            display: block;
+            animation: cardFadeIn 0.3s ease;
+        }
+        .user-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-input);
+        }
+        /* 面板内头像 正方形 */
+        .panel-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: #007aff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            overflow: hidden;
+        }
+        .panel-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .panel-username {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .panel-item {
+            padding: 10px 0;
+            font-size: 15px;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-item:hover {
+            color: #007aff;
+        }
+        .panel-divider {
+            height: 1px;
+            background: var(--border-input);
+            margin: 8px 0;
+        }
+        .panel-logout {
+            color: #ff3b30 !important;
+        }
+
+        /* 设置弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-box {
+            background: var(--bg-card);
+            width: 90%;
+            max-width: 400px;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        /* 设置预览头像 正方形 */
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            background: #e5e5ea;
+            margin: 0 auto 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .file-btn {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            text-align: center;
+            background: var(--bg-btn-gray);
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+        #avatarInput {
+            display: none;
+        }
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        /* 主题切换右侧 */
+        .theme-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .theme-label {
+            font-size: 14px;
+            color: var(--text-tip);
+            transition: color 0.3s ease;
+        }
+
+        /* 苹果风格开关 */
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 30px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e5ea;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+        input:checked + .toggle-slider {
+            background-color: #007aff;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        /* 卡片基础样式 */
+        .card {
+            background: var(--bg-card);
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-card);
+            transition: all 0.35s cubic-bezier(0.2, 0, 0.2, 1), background-color 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .card-encrypt {
+            animation: cardFadeIn 0.6s ease forwards;
+            animation-delay: 0.1s;
+        }
+        .card-decrypt {
+            animation: cardFadeIn 0.6s ease forwards;
+            animation-delay: 0.25s;
+        }
+        .card-result {
+            animation: cardFadeIn 0.6s ease forwards;
+            animation-delay: 0.4s;
+        }
+        .card-history {
+            animation: cardFadeIn 0.6s ease forwards;
+            animation-delay: 0.55s;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-card-hover);
+            transform: translateY(-4px);
+        }
+        .card:active {
+            transform: translateY(-1px);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-main);
+            transition: color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tip-text {
+            font-size: 14px;
+            color: var(--text-tip);
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-input);
+            border-radius: 12px;
+            font-size: 16px;
+            min-height: 80px;
+            resize: vertical;
+            background: var(--bg-input);
+            color: var(--text-main);
+            transition: border 0.25s ease, box-shadow 0.3s ease, transform 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+            margin-bottom: 14px;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 5px rgba(0, 122, 255, 0.18);
+            transform: scale(1.008);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            flex: 1;
+            padding: 11px 10px;
+            border-radius: 980px;
+            font-size: 15px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0.2, 1), background-color 0.3s ease, color 0.3s ease;
+            transform: scale(1);
+        }
+        .btn-primary {
+            background-color: #007aff;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background-color: #0071e3;
+            transform: scale(1.03);
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+        .btn-gray {
+            background-color: var(--bg-btn-gray);
+            color: var(--text-btn-gray);
+        }
+        .btn-gray:hover {
+            filter: brightness(0.9);
+            transform: scale(1.03);
+        }
+        .btn-gray:active {
+            transform: scale(0.97);
+        }
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 13px;
+            flex: none;
+        }
+        .btn-danger {
+            background-color: #ff3b30;
+            color: #fff;
+        }
+
+        .case-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .case-label {
+            font-size: 14px;
+            color: var(--text-tip);
+        }
+
+        #resultBox {
+            padding: 14px 16px;
+            background: var(--bg-result-box);
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 500;
+            color: var(--text-result-box);
+            margin-bottom: 14px;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.4s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+        #resultBox.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .result-value {
+            user-select: all;
+        }
+
+        .log-title {
+            font-size: 14px;
+            color: var(--text-tip);
+            margin-bottom: 6px;
+            transition: color 0.3s ease;
+        }
+        #result {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            word-break: normal;
+            font-family: Menlo, Monaco, Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            background: #121212 !important;
+            color: #4cd964 !important;
+            padding: 16px;
+            border-radius: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #result.show {
+            opacity: 1;
+        }
+
+        .history-list {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .history-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-input);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 14px;
+        }
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        .history-text {
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+        .history-time {
+            font-size: 12px;
+            color: var(--text-tip);
+        }
+        .history-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .empty-history {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-tip);
+            font-size: 14px;
+        }
+
+        @keyframes cardFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px 12px;
+            }
+            .card {
+                padding: 18px;
+            }
+            .card-title {
+                font-size: 18px;
+            }
+            button {
+                font-size: 14px;
+            }
+            .theme-bar {
+                margin-bottom: 12px;
+            }
+            .user-panel {
+                width: 240px;
+            }
+            .top-nickname {
+                font-size: 14px;
+            }
+            .auth-card {
+                padding: 24px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 登录界面（新增auth-wrap弹性居中容器） -->
+<div id="loginPage" class="auth-wrap">
+    <div class="auth-card">
+        <h2 class="auth-title">账号登录</h2>
+        <div class="form-item">
+            <label>账号</label>
+            <input type="text" class="form-input" id="loginUser" placeholder="请输入账号">
+        </div>
+        <div class="form-item">
+            <label>密码</label>
+            <input type="password" class="form-input" id="loginPwd" placeholder="请输入密码">
+        </div>
+        <div class="tip" id="loginTip">账号或密码错误</div>
+        <button class="auth-btn" onclick="userLogin()">登录</button>
+        <div class="auth-link">
+            没有账号？<span onclick="showRegister()">立即注册</span>
+        </div>
+    </div>
+</div>
+
+<!-- 注册界面（同样使用auth-wrap居中） -->
+<div id="registerPage" class="auth-wrap" style="display: none;">
+    <div class="auth-card">
+        <h2 class="auth-title">新用户注册</h2>
+        <div class="form-item">
+            <label>昵称</label>
+            <input type="text" class="form-input" id="regNick" placeholder="请设置昵称">
+        </div>
+        <div class="form-item">
+            <label>手机号</label>
+            <input type="text" class="form-input" id="regPhone" placeholder="请输入手机号">
+        </div>
+        <div class="form-item">
+            <label>账号</label>
+            <input type="text" class="form-input" id="regUser" placeholder="请设置登录账号">
+        </div>
+        <div class="form-item">
+            <label>密码</label>
+            <input type="password" class="form-input" id="regPwd" placeholder="请设置密码">
+        </div>
+        <div class="tip" id="regTip">账号已存在</div>
+        <button class="auth-btn" onclick="userRegister()">注册</button>
+        <div class="auth-link">
+            已有账号？<span onclick="showLogin()">返回登录</span>
+        </div>
+    </div>
+</div>
+
+<!-- 主界面（默认隐藏，保持原有container） -->
+<div id="mainPage" class="container" style="display: none;">
+    <!-- 顶部栏：左侧头像+昵称 + 右侧主题 -->
+    <div class="theme-bar">
+        <div class="user-left-wrap">
+            <div class="user-avatar" id="userAvatar" onclick="toggleUserPanel()">
+                <span id="avatarText">U</span>
+                <img id="avatarImg" style="display:none;">
+            </div>
+            <div class="top-nickname" id="topNickText">昵称</div>
+        </div>
+
+        <!-- 用户弹出面板 -->
+        <div class="user-panel" id="userPanel">
+            <div class="user-panel-header">
+                <div class="panel-avatar" id="panelAvatar">
+                    <span>U</span>
+                    <img id="panelAvatarImg" style="display:none;">
+                </div>
+                <div class="panel-username" id="panelNickname">昵称</div>
+            </div>
+            <div class="panel-item" onclick="openSettings()">
+                <span>⚙️</span> 账号设置
+            </div>
+            <div class="panel-divider"></div>
+            <div class="panel-item panel-logout" onclick="logout()">
+                <span>🚪</span> 退出登录
+            </div>
+        </div>
+
+        <!-- 右侧主题切换 -->
+        <div class="theme-right">
+            <span class="theme-label" id="themeText">浅色模式</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="themeToggle">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-box">
+            <div class="modal-title">账号设置</div>
+            <div class="avatar-preview" id="avatarPreview">
+                <img id="previewImg">
+            </div>
+            <label class="file-btn" for="avatarInput">更换头像</label>
+            <input type="file" id="avatarInput" accept="image/*">
+            
+            <div class="form-item">
+                <label>修改昵称</label>
+                <input type="text" class="form-input" id="editNick" placeholder="输入新昵称">
+            </div>
+            <div class="form-item">
+                <label>当前密码</label>
+                <input type="password" class="form-input" id="oldPwd" placeholder="请输入当前密码">
+            </div>
+            <div class="form-item">
+                <label>新密码</label>
+                <input type="password" class="form-input" id="newPwd" placeholder="请输入新密码">
+            </div>
+            <div class="tip" id="settingTip"></div>
+            <div class="modal-btns">
+                <button class="btn-gray" onclick="closeSettings()">取消</button>
+                <button class="btn-primary" onclick="saveSettings()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加密卡片 -->
+    <div class="card card-encrypt">
+        <h2 class="card-title">加密工具</h2>
+        <div class="tip-text">支持大写/小写字母+数字+空格，空格会保留参与运算，回车快速加密，输出字母大写、数字原样偏移</div>
+        <textarea id="plainInput" placeholder="输入明文，支持字母数字空格混合"></textarea>
+        <div class="btn-group">
+            <button class="btn-primary" onclick="encryptRun()">执行加密</button>
+            <button class="btn-gray" onclick="clearAll()">清空</button>
+        </div>
+    </div>
+
+    <!-- 解密卡片 -->
+    <div class="card card-decrypt">
+        <h2 class="card-title">解密工具</h2>
+        <div class="tip-text">密文字母大小写/空格均可识别，空格完整保留，解密字母统一大写</div>
+        <textarea id="cipherInput" placeholder="粘贴密文，支持带空格文本"></textarea>
+        <div class="btn-group">
+            <button class="btn-primary" onclick="decryptRun()">执行解密</button>
+            <button class="btn-gray" onclick="clearAll()">清空</button>
+        </div>
+    </div>
+
+    <!-- 输出结果卡片 -->
+    <div class="card card-result">
+        <h2 class="card-title">输出结果</h2>
+        <div class="case-bar">
+            <span class="case-label" id="caseText">结果大写</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="caseToggle">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        <div id="resultBox"></div>
+        <div class="log-title">完整演算表格（字母大写展示、数字/空格单独运算）：</div>
+        <div id="result"></div>
+    </div>
+
+    <!-- 历史记录 -->
+    <div class="card card-history">
+        <h2 class="card-title">
+            历史记录
+            <button class="btn-gray btn-sm" onclick="clearHistory()">清空记录</button>
+        </h2>
+        <div class="history-list" id="historyList">
+            <div class="empty-history">暂无加密记录</div>
+        </div>
+    </div>
+
+    <div class="footer-info">
+        <div>创作者：Edison</div>
+        <div>联系方式及打赏：Free10_05</div>
+        <div>改善建议：2638612412@qq.com</div>
+        <div>当前版本：v1.5.0</div>
+    </div>
+</div>
+
+<script>
+// ==============================================
+// 登录注册系统
+// ==============================================
+const loginPage = document.getElementById('loginPage');
+const registerPage = document.getElementById('registerPage');
+const mainPage = document.getElementById('mainPage');
+const loginTip = document.getElementById('loginTip');
+const regTip = document.getElementById('regTip');
+const userAvatar = document.getElementById('userAvatar');
+const avatarImg = document.getElementById('avatarImg');
+const avatarText = document.getElementById('avatarText');
+const userPanel = document.getElementById('userPanel');
+const panelAvatar = document.getElementById('panelAvatar');
+const panelAvatarImg = document.getElementById('panelAvatarImg');
+const panelNickname = document.getElementById('panelNickname');
+const topNickText = document.getElementById('topNickText');
+const settingsModal = document.getElementById('settingsModal');
+const avatarPreview = document.getElementById('previewImg');
+const avatarInput = document.getElementById('avatarInput');
+const settingTip = document.getElementById('settingTip');
+const editNick = document.getElementById('editNick');
+
+let currentAccount = ''; // 当前登录账号
+let currentNick = '';    // 当前展示昵称
+let tempAvatar = '';     // 临时头像预览
+
+// 退出登录
+function logout() {
+    localStorage.removeItem('cryptoLogin');
+    localStorage.removeItem('currentAccount');
+    localStorage.removeItem('currentNick');
+    currentAccount = '';
+    currentNick = '';
+    mainPage.style.display = 'none';
+    loginPage.style.display = 'flex';
+    registerPage.style.display = 'none';
+    document.title = 'BOOK - 登录';
+    userPanel.classList.remove('show');
+}
+
+// 显示注册
+function showRegister() {
+    loginPage.style.display = 'none';
+    registerPage.style.display = 'flex';
+    loginTip.style.display = 'none';
+    regTip.style.display = 'none';
+}
+
+// 显示登录
+function showLogin() {
+    registerPage.style.display = 'none';
+    loginPage.style.display = 'flex';
+    loginTip.style.display = 'none';
+    regTip.style.display = 'none';
+}
+
+// 获取所有注册用户
+function getUsers() {
+    let u = localStorage.getItem('cryptoUsers');
+    return u ? JSON.parse(u) : {};
+}
+
+// 保存注册用户
+function saveUsers(users) {
+    localStorage.setItem('cryptoUsers', JSON.stringify(users));
+}
+
+// 注册账号
+function userRegister() {
+    let nick = document.getElementById('regNick').value.trim();
+    let phone = document.getElementById('regPhone').value.trim();
+    let account = document.getElementById('regUser').value.trim();
+    let pwd = document.getElementById('regPwd').value.trim();
+    
+    if (!nick || !phone || !account || !pwd) {
+        regTip.innerText = '所有字段不能为空';
+        regTip.style.display = 'block';
+        return;
+    }
+    let users = getUsers();
+    if (users[account]) {
+        regTip.innerText = '账号已存在';
+        regTip.style.display = 'block';
+        return;
+    }
+    // 存储结构
+    users[account] = {pwd, nick, phone};
+    saveUsers(users);
+    alert('注册成功！请登录');
+    showLogin();
+}
+
+// 登录
+function userLogin() {
+    let account = document.getElementById('loginUser').value.trim();
+    let pwd = document.getElementById('loginPwd').value.trim();
+    let users = getUsers();
+    if (users[account] && users[account].pwd === pwd) {
+        localStorage.setItem('cryptoLogin', 'ok');
+        localStorage.setItem('currentAccount', account);
+        localStorage.setItem('currentNick', users[account].nick);
+        currentAccount = account;
+        currentNick = users[account].nick;
+        loginPage.style.display = 'none';
+        registerPage.style.display = 'none';
+        mainPage.style.display = 'block';
+        document.title = 'BOOK';
+        updateUserAvatar();
+        renderHistory();
+    } else {
+        loginTip.style.display = 'block';
+    }
+}
+
+// 页面加载校验
+function checkAuth() {
+    const loginState = localStorage.getItem('cryptoLogin');
+    if (loginState !== 'ok') {
+        mainPage.style.display = 'none';
+        loginPage.style.display = 'flex';
+        registerPage.style.display = 'none';
+        return;
+    }
+    // 已登录直接进主页
+    currentAccount = localStorage.getItem('currentAccount');
+    currentNick = localStorage.getItem('currentNick');
+    loginPage.style.display = 'none';
+    registerPage.style.display = 'none';
+    mainPage.style.display = 'block';
+}
+
+// ==============================================
+// 用户头像 & 设置功能
+// ==============================================
+// 切换用户面板
+function toggleUserPanel() {
+    userPanel.classList.toggle('show');
+    panelNickname.innerText = currentNick || '用户';
+    topNickText.innerText = currentNick || '用户';
+}
+
+// 点击外部关闭面板
+document.addEventListener('click', (e) => {
+    if (!userAvatar.contains(e.target) && !userPanel.contains(e.target)) {
+        userPanel.classList.remove('show');
+    }
+});
+
+// 更新头像+昵称显示
+function updateUserAvatar() {
+    if (!currentAccount) return;
+    panelNickname.innerText = currentNick;
+    topNickText.innerText = currentNick;
+    const avatar = localStorage.getItem(`avatar_${currentAccount}`);
+    if (avatar) {
+        avatarImg.src = avatar;
+        avatarImg.style.display = 'block';
+        avatarText.style.display = 'none';
+        panelAvatarImg.src = avatar;
+        panelAvatarImg.style.display = 'block';
+        panelAvatar.querySelector('span').style.display = 'none';
+        avatarPreview.src = avatar;
+    } else {
+        avatarImg.style.display = 'none';
+        avatarText.style.display = 'block';
+        avatarText.innerText = currentNick.charAt(0).toUpperCase();
+        panelAvatarImg.style.display = 'none';
+        panelAvatar.querySelector('span').innerText = currentNick.charAt(0).toUpperCase();
+        panelAvatar.querySelector('span').style.display = 'block';
+    }
+}
+
+// 打开设置
+function openSettings() {
+    settingsModal.style.display = 'flex';
+    userPanel.classList.remove('show');
+    settingTip.style.display = 'none';
+    document.getElementById('oldPwd').value = '';
+    document.getElementById('newPwd').value = '';
+    editNick.value = currentNick;
+    tempAvatar = '';
+    updateUserAvatar();
+}
+
+// 关闭设置
+function closeSettings() {
+    settingsModal.style.display = 'none';
+}
+
+// 头像上传预览
+avatarInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        tempAvatar = event.target.result;
+        avatarPreview.src = tempAvatar;
+    };
+    reader.readAsDataURL(file);
+});
+
+// 保存设置（修改昵称、密码 + 头像）
+function saveSettings() {
+    const oldPwd = document.getElementById('oldPwd').value.trim();
+    const newPwd = document.getElementById('newPwd').value.trim();
+    const newNick = editNick.value.trim();
+    const users = getUsers();
+
+    // 校验旧密码
+    if (oldPwd && users[currentAccount].pwd !== oldPwd) {
+        settingTip.innerText = '当前密码错误';
+        settingTip.style.display = 'block';
+        return;
+    }
+    // 修改昵称
+    if (newNick && newNick !== currentNick) {
+        users[currentAccount].nick = newNick;
+        currentNick = newNick;
+        localStorage.setItem('currentNick', newNick);
+    }
+    // 修改密码
+    if (newPwd) {
+        users[currentAccount].pwd = newPwd;
+        saveUsers(users);
+    }
+    saveUsers(users);
+    // 保存头像
+    if (tempAvatar) {
+        localStorage.setItem(`avatar_${currentAccount}`, tempAvatar);
+    }
+    updateUserAvatar();
+    alert('设置保存成功');
+    closeSettings();
+}
+
+// ==============================================
+// 主题 & 大小写 & 加密逻辑（原有功能）
+// ==============================================
+const resDom = document.getElementById('result');
+const resBox = document.getElementById('resultBox');
+const plainInput = document.getElementById('plainInput');
+const cipherInput = document.getElementById('cipherInput');
+const themeToggle = document.getElementById('themeToggle');
+const themeText = document.getElementById('themeText');
+const caseToggle = document.getElementById('caseToggle');
+const caseText = document.getElementById('caseText');
+const historyList = document.getElementById('historyList');
+const aCode = 'a'.charCodeAt(0);
+const ACode = 'A'.charCodeAt(0);
+const zeroCode = '0'.charCodeAt(0);
+
+let config = { upperCase: true };
+let currentResultText = '';
+
+// 更新主题文字
+function updateThemeText(isDark) {
+    themeText.innerText = isDark ? "深色模式" : "浅色模式";
+}
+
+// 主题初始化
+function initTheme() {
+    const saved = localStorage.getItem('cryptoTheme');
+    if (saved === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        themeToggle.checked = true;
+        updateThemeText(true);
+    } else {
+        document.body.removeAttribute('data-theme');
+        themeToggle.checked = false;
+        updateThemeText(false);
+    }
+}
+themeToggle.addEventListener('change', () => {
+    if (themeToggle.checked) {
+        document.body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('cryptoTheme', 'dark');
+        updateThemeText(true);
+    } else {
+        document.body.removeAttribute('data-theme');
+        localStorage.setItem('cryptoTheme', 'light');
+        updateThemeText(false);
+    }
+});
+
+// 大小写开关
+function initCaseToggle() {
+    const saved = localStorage.getItem('cryptoCase');
+    config.upperCase = saved !== 'lower';
+    caseToggle.checked = !config.upperCase;
+    caseText.innerText = config.upperCase ? "结果大写" : "结果小写";
+}
+caseToggle.addEventListener('change', () => {
+    config.upperCase = !caseToggle.checked;
+    caseText.innerText = config.upperCase ? "结果大写" : "结果小写";
+    localStorage.setItem('cryptoCase', config.upperCase ? 'upper' : 'lower');
+    if(currentResultText){
+        const newText = config.upperCase ? currentResultText : currentResultText.toLowerCase();
+        if(resBox.innerText.includes('密文：')){
+            resBox.innerHTML = `【加密最终结果】密文：<span class="result-value">${newText}</span>`;
+        }else if(resBox.innerText.includes('明文：')){
+            resBox.innerHTML = `【解密最终结果】明文：<span class="result-value">${newText}</span>`;
+        }
+    }
+});
+
+// 回车加密解密
+plainInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); encryptRun(); }
+});
+cipherInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); decryptRun(); }
+});
+
+// 加密解密工具函数
+function toLowerChar(c) { return c.toLowerCase(); }
+function toUpperStr(str) { return str.toUpperCase(); }
+function toUpperChar(c) { return c.toUpperCase(); }
+
+function caesarAdd7Letter(c) {
+    const low = toLowerChar(c);
+    const idx = (low.charCodeAt(0) - aCode + 7) % 26;
+    return String.fromCharCode(ACode + idx);
+}
+function caesarSub7Letter(c) {
+    const low = toLowerChar(c);
+    const idx = (low.charCodeAt(0) - aCode - 7 + 26) % 26;
+    return String.fromCharCode(ACode + idx);
+}
+
+function numAdd3(nChar) {
+    const num = parseInt(nChar,10);
+    return String((num+3)%10);
+}
+function numSub3(nChar) {
+    const num = parseInt(nChar,10);
+    return String((num-3+10)%10);
+}
+
+function isNumberChar(c) { return /[0-9]/.test(c); }
+function isLetterChar(c) { return /[a-zA-Z]/.test(c); }
+
+function encodeSingleChar(c) {
+    if(c===' ') return ' ';
+    if(isLetterChar(c)) return caesarAdd7Letter(c);
+    if(isNumberChar(c)) return numAdd3(c);
+    return c;
+}
+function decodeSingleChar(c) {
+    if(c===' ') return ' ';
+    if(isLetterChar(c)) return caesarSub7Letter(c);
+    if(isNumberChar(c)) return numSub3(c);
+    return c;
+}
+
+function flipEvenStr(str) {
+    const upperStr = toUpperStr(str);
+    const arr = upperStr.split('');
+    const result = [];
+    const contentList = [];
+    const spacePositions = [];
+
+    arr.forEach((char,idx)=>{
+        if(char===' '){
+            spacePositions.push(idx);
+            result.push(' ');
+        }else{
+            contentList.push(char);
+        }
+    });
+
+    const odd = [], even = [];
+    for(let i=0;i<contentList.length;i++){
+        i%2===0 ? odd.push(contentList[i]) : even.push(contentList[i]);
+    }
+    const evenRev = [...even].reverse();
+
+    let oIdx=0,eIdx=0;
+    const newContent = [];
+    for(let i=0;i<contentList.length;i++){
+        i%2===0 ? newContent.push(odd[oIdx++]) : newContent.push(evenRev[eIdx++]);
+    }
+
+    let cIdx=0;
+    const finalArr = arr.map(char=>{
+        if(char===' ') return ' ';
+        return newContent[cIdx++];
+    });
+
+    return {
+        originArr:arr, oddList:odd, evenOrigin:even, evenRev:evenRev,
+        newArr:finalArr, newStr:finalArr.join('')
+    };
+}
+
+function fixTabSpace(text) { return text.replaceAll('\t','    '); }
+
+function printPosTable(charArr) {
+    let posLine="位置: ", charLine="字符: ";
+    charArr.forEach((char,idx)=>{
+        const p=idx+1;
+        posLine+=p+"\t";
+        charLine+=(char===' '?'□':char)+"\t";
+    });
+    return fixTabSpace(posLine+"\n"+charLine+"\n");
+}
+
+function autoSelectResult() {
+    setTimeout(()=>{
+        const target = resBox.querySelector('.result-value');
+        if(!target) return;
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.selectNodeContents(target);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    },100);
+}
+
+// ============== 历史记录 ==============
+function getHistory() {
+    let hist = localStorage.getItem('cryptoHistory');
+    return hist ? JSON.parse(hist) : [];
+}
+function saveHistory(hist) {
+    localStorage.setItem('cryptoHistory',JSON.stringify(hist));
+}
+function addHistory(plain,cipher) {
+    let hist = getHistory();
+    hist.unshift({
+        time:new Date().toLocaleString(), plain:plain, cipher:cipher,
+        params:"字母+7,数字+3,奇偶翻转"
+    });
+    if(hist.length>10) hist=hist.slice(0,10);
+    saveHistory(hist);
+}
+function renderHistory() {
+    const hist = getHistory();
+    if(hist.length===0){
+        historyList.innerHTML='<div class="empty-history">暂无加密记录</div>';
+        return;
+    }
+    let html='';
+    hist.forEach((item,idx)=>{
+        html+=`
+        <div class="history-item">
+            <div class="history-text"><b>原文：</b>${item.plain}</div>
+            <div class="history-text"><b>密文：</b>${item.cipher}</div>
+            <div class="history-text"><b>参数：</b>${item.params}</div>
+            <div class="history-time">${item.time}</div>
+            <div class="history-btns">
+                <button class="btn-gray btn-sm" onclick="deleteHistory(${idx})">删除</button>
+            </div>
+        </div>`;
+    });
+    historyList.innerHTML=html;
+}
+function deleteHistory(index) {
+    let hist=getHistory();
+    hist.splice(index,1);
+    saveHistory(hist);
+    renderHistory();
+}
+function clearHistory() {
+    if(!confirm('确定清空所有历史记录？')) return;
+    localStorage.removeItem('cryptoHistory');
+    renderHistory();
+}
+
+// 加密
+function encryptRun() {
+    try {
+        const rawText = plainInput.value.trimEnd();
+        if(!rawText){ resBox.innerText="请输入明文！"; resBox.classList.add("show"); resDom.classList.remove("show"); currentResultText=''; return; }
+        const filter = rawText.replace(/[^a-zA-Z0-9 ]/g,"");
+        if(!filter.replace(/ /g,'')){ resBox.innerText="未检测到有效字母/数字！"; resBox.classList.add("show"); resDom.classList.remove("show"); currentResultText=''; return; }
+        
+        const midArr = filter.split('').map(c=>encodeSingleChar(c));
+        const midStr = midArr.join('');
+        const flip = flipEvenStr(midStr);
+        const cipherRaw = flip.newStr;
+        currentResultText = config.upperCase ? cipherRaw : cipherRaw.toLowerCase();
+        
+        resBox.innerHTML = `【加密最终结果】密文：<span class="result-value">${currentResultText}</span>`;
+        resBox.classList.add("show");
+        resDom.classList.remove("show");
+        autoSelectResult();
+        addHistory(filter, currentResultText);
+        renderHistory();
+    }catch(err){
+        resBox.innerText="出错："+err.message; resBox.classList.add("show"); resDom.classList.remove("show");
+    }
+}
+
+// 解密
+function decryptRun() {
+    try {
+        const rawText = cipherInput.value.trimEnd();
+        if(!rawText){ resBox.innerText="请输入密文！"; resBox.classList.add("show"); resDom.classList.remove("show"); currentResultText=''; return; }
+        const filter = rawText.replace(/[^a-zA-Z0-9 ]/g,"");
+        if(!filter.replace(/ /g,'')){ resBox.innerText="未检测到有效字母/数字！"; resBox.classList.add("show"); resDom.classList.remove("show"); currentResultText=''; return; }
+        
+        const flip = flipEvenStr(filter);
+        const midStr = flip.newStr;
+        const plainRaw = midStr.split('').map(c=>decodeSingleChar(c)).join('');
+        currentResultText = config.upperCase ? plainRaw : plainRaw.toLowerCase();
+        
+        resBox.innerHTML = `【解密最终结果】明文：<span class="result-value">${currentResultText}</span>`;
+        resBox.classList.add("show");
+        resDom.classList.remove("show");
+        autoSelectResult();
+    }catch(err){
+        resBox.innerText="出错："+err.message; resBox.classList.add("show"); resDom.classList.remove("show");
+    }
+}
+
+// 清空
+function clearAll() {
+    resBox.classList.remove("show");
+    resDom.classList.remove("show");
+    currentResultText='';
+    setTimeout(()=>{
+        plainInput.value="";
+        cipherInput.value="";
+        resBox.innerHTML="";
+        resDom.innerText="";
+    },300);
+}
+
+// 页面加载
+window.onload = function () {
+    checkAuth();
+    initTheme();
+    initCaseToggle();
+    updateUserAvatar();
+    renderHistory();
+};
+</script>
+</body>
+</html>
